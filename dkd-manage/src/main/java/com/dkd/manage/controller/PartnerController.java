@@ -17,7 +17,9 @@ import com.dkd.common.core.controller.BaseController;
 import com.dkd.common.core.domain.AjaxResult;
 import com.dkd.common.enums.BusinessType;
 import com.dkd.manage.domain.Partner;
+import com.dkd.manage.domain.vo.PartnerVo;
 import com.dkd.manage.service.IPartnerService;
+import com.dkd.common.utils.SecurityUtils;
 import com.dkd.common.utils.poi.ExcelUtil;
 import com.dkd.common.core.page.TableDataInfo;
 
@@ -38,7 +40,7 @@ public class PartnerController extends BaseController
      * 查询合作商管理列表
      */
     @PreAuthorize("@ss.hasPermi('manage:partner:list')")
-    @GetMapping("/list")
+    @GetMapping("/lists")
     public TableDataInfo list(Partner partner)
     {
         startPage();
@@ -100,5 +102,30 @@ public class PartnerController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(partnerService.deletePartnerByIds(ids));
+    }
+        
+    /**
+     * 查询合作商管理列表（包含点位数量）
+     */
+    @PreAuthorize("@ss.hasPermi('manage:partner:list')")
+    @GetMapping("/list")
+    public TableDataInfo voList(Partner partner)
+    {
+        startPage();
+        List<PartnerVo> list = partnerService.selectPartnerVoList(partner);
+        return getDataTable(list);
+    }
+
+    /***重置合作商密码 */
+    @PreAuthorize("@ss.hasPermi('manage:partner:edit')")
+    @Log(title = "重置合作商密码", businessType = BusinessType.UPDATE)
+    @PutMapping("/resetPwd/{id}")
+    public AjaxResult resetpwd(@PathVariable Long id) {//1. 接收参数
+        //2. 创建合作商对象
+        Partner partner = new Partner();
+        partner.setId(id);// 设置id
+        partner.setPassword(SecurityUtils.encryptPassword("123456"));// 设置加密后的初始密码
+        //3. 调用service更新密码
+        return toAjax(partnerService.updatePartner(partner));
     }
 }

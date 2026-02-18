@@ -17,6 +17,7 @@ import com.dkd.common.core.controller.BaseController;
 import com.dkd.common.core.domain.AjaxResult;
 import com.dkd.common.enums.BusinessType;
 import com.dkd.manage.domain.Node;
+import com.dkd.manage.domain.vo.NodeVo;
 import com.dkd.manage.service.INodeService;
 import com.dkd.common.utils.poi.ExcelUtil;
 import com.dkd.common.core.page.TableDataInfo;
@@ -42,7 +43,7 @@ public class NodeController extends BaseController
     public TableDataInfo list(Node node)
     {
         startPage();
-        List<Node> list = nodeService.selectNodeList(node);
+        List<NodeVo> list = nodeService.selectNodeVoList(node);
         return getDataTable(list);
     }
 

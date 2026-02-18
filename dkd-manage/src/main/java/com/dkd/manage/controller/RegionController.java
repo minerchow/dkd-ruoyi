@@ -17,6 +17,7 @@ import com.dkd.common.core.controller.BaseController;
 import com.dkd.common.core.domain.AjaxResult;
 import com.dkd.common.enums.BusinessType;
 import com.dkd.manage.domain.Region;
+import com.dkd.manage.domain.vo.RegionVo;
 import com.dkd.manage.service.IRegionService;
 import com.dkd.common.utils.poi.ExcelUtil;
 import com.dkd.common.core.page.TableDataInfo;
@@ -38,7 +39,7 @@ public class RegionController extends BaseController
      * 查询区域管理列表
      */
     @PreAuthorize("@ss.hasPermi('manage:region:list')")
-    @GetMapping("/list")
+    @GetMapping("/lists")
     public TableDataInfo list(Region region)
     {
         startPage();
@@ -100,5 +101,15 @@ public class RegionController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(regionService.deleteRegionByIds(ids));
+    }
+    
+    /**查询区域列表 */
+    @PreAuthorize("@ss.hasPermi('manage:region:list')")
+    @GetMapping("/list")
+    public TableDataInfo voList(Region region)
+    {
+        startPage();
+        List<RegionVo> list = regionService.selectRegionVoList(region);
+        return getDataTable(list);
     }
 }
